@@ -12,6 +12,7 @@ const connectionConfig = {
     // reconnectionDelay: 100,
     // reconnectionAttempts: 100000,
     transports: ['websocket'], // you need to explicitly tell it to use websockets
+    pingTimeout: 30000
 };
 
 export class websocket {

@@ -122,7 +122,7 @@ class Order extends React.Component<any, any> {
                                         }}
                                     />
                                     {this.state.openOrders.map(order => (
-                                        <TouchableOpacity onPress={() => this.checkOrder(order)}>
+                                        <TouchableOpacity onPress={() => this.checkOrder(order)} key={order.orderId}>
                                             <View>
                                                 <View style={styles.order} key={order.orderId}>
                                                     <View style={styles.logo}>

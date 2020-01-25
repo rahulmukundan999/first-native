@@ -1,4 +1,4 @@
-import { ADD_FRIEND } from './Types';
+import { ADD_FRIEND, ADD_ITEM } from './Types';
 
 export const addFriend = friendIndex => (
     {
@@ -6,3 +6,10 @@ export const addFriend = friendIndex => (
         payload: friendIndex,
     }
 );
+
+export const addItem = item => (
+    {
+        type: ADD_ITEM,
+        payload: item
+    }
+)

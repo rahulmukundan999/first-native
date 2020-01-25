@@ -21,11 +21,11 @@ export default class Loader extends React.Component<any, any> {
 
     render() {
 
-        const temp = [1, 1, 1, 1, 1, 1, 1];
+        const temp = [1, 2, 3, 4, 5, 6, 7];
         return (
             <View>
                 {temp.map(value => (
-                    <View style={{ marginTop: 20 }}>
+                    <View style={{ marginTop: 20 }} key={value}>
                         <Placeholder
                             Left={PlaceholderMedia}
                             // Right={PlaceholderMedia}

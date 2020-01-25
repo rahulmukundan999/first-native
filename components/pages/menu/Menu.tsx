@@ -10,6 +10,9 @@ import MenuIcons from './MenuIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import SelectableItem from './Item';
+import { bindActionCreators } from 'redux';
+import { addItem } from '../../data/FriendAction';
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 
@@ -42,6 +45,20 @@ class Menu extends React.Component<any, any> {
         this.closeOrder = this.closeOrder.bind(this);
         this.totalItems = this.totalItems.bind(this);
         this.totalAmount = this.totalAmount.bind(this);
+        this.updateItem = this.updateItem.bind(this);
+    }
+
+    updateItem(data) {
+        // console.log('hello world', data);
+        // let temp = new Map(this.state.selected);
+        for (let index in data.items) {
+            this.setState((state) => {
+                const selected = new Map(state.selected);
+                selected.set(index, !selected.get(index));
+                return { selected };
+            });
+        }
+        this.setState({ items: data.items });
     }
 
     totalItems() {
@@ -51,8 +68,8 @@ class Menu extends React.Component<any, any> {
         }
 
         return (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'black' }}>{temp}</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 18 }}>
+                <Text style={{ color: 'black', fontSize: 18 }}>{temp}</Text>
             </View>
         )
     }
@@ -65,15 +82,15 @@ class Menu extends React.Component<any, any> {
         temp = temp.toFixed(2);
 
         return (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'white' }}>{temp}</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 18 }}>
+                <Text style={{ color: 'white', fontSize: 18 }}>Next {temp}</Text>
             </View>
         )
     }
 
 
     componentDidMount() {
-        let temp = this.props.friends.current[0];
+        let temp = this.props.friends.current[this.props.friends.current.length - 1];
         // console.log('temptemp', temp)
         // let temp = JSON.parse(this.props.navigation.getParam('details'));
         console.log('gregergregre', temp);
@@ -110,11 +127,11 @@ class Menu extends React.Component<any, any> {
                 <View style={{ backgroundColor: '#059905', width: '100%', height: 55, marginBottom: 5 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'flex-end' }}>
                         <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 8 }}>{item.name}   </Text>
-                        <Image style={{ width: 25, height: 40, marginLeft: 10, marginRight: 5 }} source={{ uri: item.icon }} />
+                        <Image resizeMode="contain" style={{ width: 25, height: 40, marginLeft: 10, marginRight: 5 }} source={{ uri: item.icon }} />
                     </View>
                 </View>
                 {item.groups && item.groups.length > 0 ? item.groups.map(group => (
-                    <View>
+                    <View key={group._id}>
                         <View style={styles.group}>
                             <Text style={{ color: 'white', fontSize: 18, marginTop: 2, fontWeight: '600', marginLeft: 10 }}>{group.name}</Text>
                         </View>
@@ -126,6 +143,7 @@ class Menu extends React.Component<any, any> {
                                 title={it.name}
                                 items={this.state.items}
                                 item={it}
+                                key={it._id}
                             />
                         )) : (<View></View>)}
                     </View>
@@ -220,10 +238,11 @@ class Menu extends React.Component<any, any> {
                             extraData={this.state.selected}
                             keyExtractor={item => item._id}
                             renderItem={this.renderItem}
-                        // removeClippedSubviews={true} // Unmount components when outside of window 
-                        // initialNumToRender={2} // Reduce initial render amount
-                        // maxToRenderPerBatch={1} // Reduce number in each render batch
-                        // windowSize={7} // Reduce the window size
+                            removeClippedSubviews={true} // Unmount components when outside of window 
+                            initialNumToRender={2} // Reduce initial render amount
+                            maxToRenderPerBatch={2} // Reduce number in each render batch
+                            windowSize={7} // Reduce the window size
+                        // updateCellsBatchingPeriod={25}
                         />
                         {Object.keys(this.state.items).length > 0 ? (
                             <View style={styles.footer}>
@@ -232,10 +251,16 @@ class Menu extends React.Component<any, any> {
                                 </View>
                                 <View style={{ width: '60%', height: 70, backgroundColor: 'orange' }}>
                                     <TouchableOpacity onPress={() => {
-                                        this.props.navigation.navigate('ItemDetails')
+                                        console.log('gewrger', this.state.items);
+                                        this.props.addItem(this.state.items);
+                                        this.props.navigation.push('ItemDetails', {
+                                            details: this.state.items,
+                                            updateItem: this.updateItem,
+                                            handleOnPressItem: this.handleOnPressItem
+                                        })
 
-                                    }}>
-                                        <Text>Next</Text>
+                                    }}
+                                        style={{ width: '100%' }}>
                                         {this.totalAmount()}
                                     </TouchableOpacity>
                                 </View>
@@ -295,4 +320,10 @@ const mapStateToProps = (state) => {
     return { friends }
 };
 
-export default connect(mapStateToProps)(Menu);
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        addItem,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

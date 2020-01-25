@@ -27,7 +27,8 @@ export default class SelectableItem extends React.Component<any, any> {
             items[id] = {
                 quantity: 0,
                 name: item.name,
-                price: item.price
+                price: item.price,
+                course: item.course
             }
         }
         items[id].quantity++;
@@ -41,7 +42,8 @@ export default class SelectableItem extends React.Component<any, any> {
             items[id] = {
                 quantity: 0,
                 name: item.name,
-                price: item.price
+                price: item.price,
+                course: item.course
             }
         }
         items[id].quantity--;
@@ -73,7 +75,7 @@ export default class SelectableItem extends React.Component<any, any> {
     shouldComponentUpdate(nextProps) {
         // console.log('fewf', nextProps, this.props);
         const { selected } = this.props;
-        // console.log('greg', selected !== nextProps.selected)
+        console.log('greg', selected !== nextProps.selected)
         return selected !== nextProps.selected;
     }
 
@@ -83,7 +85,8 @@ export default class SelectableItem extends React.Component<any, any> {
             items[id] = {
                 quantity: 0,
                 name: item.name,
-                price: item.price
+                price: item.price,
+                course: item.course
             }
         }
         items[id].quantity++;
@@ -96,24 +99,25 @@ export default class SelectableItem extends React.Component<any, any> {
 
         return (
             <View>
-                <View style={{ marginLeft: 8 }}>
+                <View style={{ marginLeft: 8, marginTop: 2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '100' }}>{item.name}</Text>
                 </View>
-                <View style={{ marginLeft: 8 }}>
-                    <Text style={{ fontSize: 14, color: 'lightgrey' }}>{item.description}</Text>
+                <View style={{ marginLeft: 8, marginTop: 4 }}>
+                    <Text style={{ fontSize: 14, color: '#606060' }}>{item.description}</Text>
                 </View>
                 <View>
                     <Image
+                        resizeMode="contain"
                         style={{ width: screenWidth, height: item && item.images[0] ? item.images[0].height : 300 }}
                         source={{ uri: item.images && item.images[0] ? item.images[0].url : 'https://youmnu-items.s3.amazonaws.com/youmnu/5cac46a1890e1b44b363a71e/main/561034614.png' }} />
                 </View>
-                <View style={{ width: '100%', height: 50, marginTop: 4 }}>
+                <View style={{ width: '100%', height: 50, marginTop: 4, marginRight: 4 }}>
                     {items[id] ? (
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'flex-end' }}>
                             <Text style={{ marginTop: 4 }}>{item.price}</Text>
                             <MaterialIcons name="remove-circle" size={30} onPress={() => this.removeItem()} style={{ marginLeft: 4, marginBottom: 24, color: 'lightgrey' }} />
-                            <Text style={{ color: 'black', marginLeft: 6, marginTop: 4 }}>{items[id] ? items[id].quantity : 0}</Text>
-                            <MaterialIcons name="add-circle" size={30} onPress={() => this.addItem()} style={{ marginLeft: 6, marginRight: 6, marginBottom: 24, color: 'lightgrey' }} />
+                            <MaterialIcons name="add-circle" size={30} onPress={() => this.addItem()} style={{ marginLeft: 6, marginBottom: 24, color: 'lightgrey' }} />
+                            <Text style={{ color: 'black', marginLeft: 6, marginTop: 4, marginRight: 10 }}>{items[id] ? items[id].quantity : 0}</Text>
                         </View>
                     ) : (
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'flex-end' }}>
@@ -124,10 +128,10 @@ export default class SelectableItem extends React.Component<any, any> {
                 </View>
                 <View
                     style={{
-                        borderBottomColor: 'lightgrey',
-                        borderBottomWidth: 2,
+                        borderBottomColor: '#F5F5F5',
+                        borderBottomWidth: 4,
                         marginTop: 2,
-                        marginBottom: 2
+                        // marginBottom: 2
                     }}
                 />
             </View>

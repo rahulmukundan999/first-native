@@ -11,7 +11,7 @@ import Login from './login/Login';
 import Scan from './scan/Scan';
 import Order from './order/Order';
 import ItemDetails from './itemDetails/ItemDetails'
-import { Dimensions } from 'react-native';
+import { Dimensions, Button } from 'react-native';
 
 
 const WIDTH = Dimensions.get('window').width;
@@ -43,7 +43,18 @@ const MenuScreen = createStackNavigator({
         }
     },
     ItemDetails: {
-        screen: ItemDetails
+        screen: ItemDetails,
+        navigationOptions: ({ navigation, }) => {
+            const { params } = navigation.state;
+            console.log('gfwetfg', navigation.getParam('handleBackPress'));
+            return {
+                title: 'Your Orders',
+                headerLeft: <Button title={"Save"} onPress={() => navigation.getParam('handleBackPress')()} />,
+                headerTitleStyle: {
+                    width: WIDTH - 75
+                }
+            }
+        }
     }
 }, {
     initialRouteName: 'Menu',

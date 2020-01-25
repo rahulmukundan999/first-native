@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
+import ItemDetails from 'components/pages/itemDetails/ItemDetails';
 
-const INITIAL_STATE = {
+let INITIAL_STATE = {
     current: [],
     possible: [
         'Allie',
@@ -8,6 +9,7 @@ const INITIAL_STATE = {
         'Lizzie',
         'Reptar',
     ],
+    items: []
 };
 
 const friendReducer = (state = INITIAL_STATE, action) => {
@@ -18,7 +20,7 @@ const friendReducer = (state = INITIAL_STATE, action) => {
             // Pulls current and possible out of previous state
             // We do not want to alter state directly in case
             // another action is altering it at the same time
-            const {
+            let {
                 current,
                 possible,
             } = state;
@@ -26,6 +28,9 @@ const friendReducer = (state = INITIAL_STATE, action) => {
 
             // Pull friend out of friends.possible
             // Note that action.payload === friendIndex
+            if (!current) {
+                current = []
+            }
             const addedFriend = action.payload;
 
             // And put friend in friends.current
@@ -35,6 +40,13 @@ const friendReducer = (state = INITIAL_STATE, action) => {
             const newState = { current, possible };
             console.log('new state', newState);
             return newState;
+
+        case 'ADD_ITEM':
+            console.log('state items', state, action);
+            const { items } = INITIAL_STATE;
+            items.push(action.payload);
+            const newTemp = { items };
+            return newTemp
         default:
             return state;
     }

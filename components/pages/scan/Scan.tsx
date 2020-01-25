@@ -13,6 +13,10 @@ import { connect } from 'react-redux';
 
 class Scan extends React.Component<any, any> {
 
+
+    willFocus: any;
+    willBlur: any;
+
     scanService: ScanService = new ScanService();
 
 
@@ -34,18 +38,19 @@ class Scan extends React.Component<any, any> {
     async componentDidMount() {
         this.getPermissionsAsync();
         const { navigation } = this.props;
-        navigation.addListener('willFocus', () =>
+        this.willFocus = navigation.addListener('willFocus', () =>
             this.setState({ focusedScreen: true, scanned: false })
         );
-        navigation.addListener('willBlur', () =>
+        this.willBlur = navigation.addListener('willBlur', () =>
             this.setState({ focusedScreen: false, scanned: true })
         );
     }
 
     async componentWillUnmount() {
-        const { navigation } = this.props;
-        navigation.removeListener('willFocus');
-        navigation.removeListener('willBlur');
+        this.willFocus.remove();
+        this.willBlur.remove();
+        // navigation.removeListener('willFocus');
+        // navigation.removeListener('willBlur');
     }
 
     torchFlag = () => {
