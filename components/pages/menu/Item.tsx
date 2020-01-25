@@ -32,7 +32,7 @@ export default class SelectableItem extends React.Component<any, any> {
             }
         }
         items[id].quantity++;
-        // console.log('fewfew', item);
+        // //console.log('fewfew', item);
         onPressItem(id, items);
     }
 
@@ -50,7 +50,7 @@ export default class SelectableItem extends React.Component<any, any> {
         if (items[id].quantity == 0) {
             delete items[id];
         }
-        // console.log('fewfew', item);
+        // //console.log('fewfew', item);
         onPressItem(id, items);
     }
 
@@ -73,9 +73,9 @@ export default class SelectableItem extends React.Component<any, any> {
     }
 
     shouldComponentUpdate(nextProps) {
-        // console.log('fewf', nextProps, this.props);
+        // //console.log('fewf', nextProps, this.props);
         const { selected } = this.props;
-        console.log('greg', selected !== nextProps.selected)
+        //console.log('greg', selected !== nextProps.selected)
         return selected !== nextProps.selected;
     }
 
@@ -90,7 +90,7 @@ export default class SelectableItem extends React.Component<any, any> {
             }
         }
         items[id].quantity++;
-        // console.log('fewfew', item);
+        // //console.log('fewfew', item);
         onPressItem(id, items);
     }
 

@@ -61,7 +61,7 @@ class Scan extends React.Component<any, any> {
 
     getPermissionsAsync = async () => {
         // const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        const { status, expires, permissions } = await Permissions.getAsync(
+        const { status, expires, permissions } = await Permissions.askAsync(
             Permissions.CAMERA,
             // Permissions.CONTACTS
         );

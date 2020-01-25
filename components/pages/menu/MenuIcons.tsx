@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 
 export default function MenuIcons(props) {
-    console.log('gregr', props);
+    //console.log('gregr', props);
     const orderType = props.details.orderType;
     if (orderType == 'dine_in') {
         return (

@@ -239,9 +239,9 @@ class Menu extends React.Component<any, any> {
                             keyExtractor={item => item._id}
                             renderItem={this.renderItem}
                             removeClippedSubviews={true} // Unmount components when outside of window 
-                            initialNumToRender={2} // Reduce initial render amount
-                            maxToRenderPerBatch={2} // Reduce number in each render batch
-                            windowSize={7} // Reduce the window size
+                            // initialNumToRender={4} // Reduce initial render amount
+                            maxToRenderPerBatch={10} // Reduce number in each render batch
+                            // windowSize={7} // Reduce the window size
                         // updateCellsBatchingPeriod={25}
                         />
                         {Object.keys(this.state.items).length > 0 ? (
@@ -258,7 +258,7 @@ class Menu extends React.Component<any, any> {
                                             updateItem: this.updateItem,
                                             handleOnPressItem: this.handleOnPressItem
                                         })
-
+                                        return
                                     }}
                                         style={{ width: '100%' }}>
                                         {this.totalAmount()}

@@ -44,17 +44,24 @@ const MenuScreen = createStackNavigator({
     },
     ItemDetails: {
         screen: ItemDetails,
-        navigationOptions: ({ navigation, }) => {
-            const { params } = navigation.state;
-            console.log('gfwetfg', navigation.getParam('handleBackPress'));
-            return {
-                title: 'Your Orders',
-                headerLeft: <Button title={"Save"} onPress={() => navigation.getParam('handleBackPress')()} />,
-                headerTitleStyle: {
-                    width: WIDTH - 75
-                }
+        navigationOptions:{
+            headerTitle : 'Your Orders',
+            headerTitleStyle : {
+                width : WIDTH - 75
             }
         }
+        // navigationOptions: ({ navigation, }) => {
+        //     const { params } = navigation.state;
+        //     console.log('gfwetfg', navigation.getParam('handleBackPress'));
+        //     return {
+        //         title: 'Your Orders',
+        //         headerLeft:<MaterialCommunityIcons name="chevron-left" size={45} onPress={() => navigation.getParam('handleBackPress')()} />,
+        //         headerTitleStyle: {
+        //             width: WIDTH - 75,
+        //             marginLeft : 4
+        //         }
+        //     }
+        // }
     }
 }, {
     initialRouteName: 'Menu',

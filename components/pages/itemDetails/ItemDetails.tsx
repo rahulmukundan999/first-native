@@ -156,8 +156,8 @@ class ItemDetails extends React.Component<any, any> {
                                 }}
                                     key={item.id}>
                                     <MaterialIcons name="remove-circle" size={30} style={{ color: 'lightgrey' }} onPress={() => this.removeItem(course, item, index)} />
-                                    <Text style={{ marginLeft: 10 }}>{item.quantity}</Text>
-                                    <MaterialIcons name="add-circle" size={30} style={{ marginLeft: 10, color: 'lightgrey' }} onPress={() => this.addItem(course, item, index)} />
+                                    <Text style={{ marginLeft: 11 ,width : 22,alignContent:'center',justifyContent:'center'}}>{item.quantity}</Text>
+                                    <MaterialIcons name="add-circle" size={30} style={{ marginLeft: 4, color: 'lightgrey' }} onPress={() => this.addItem(course, item, index)} />
                                     <Text style={{ marginLeft: 10 }}>{item.name}</Text>
                                     <Text style={{ position: 'absolute', right: 5, color: '#303030' }}>{item.price}</Text>
                                 </View>
