@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { AsyncStorage } from 'react-native';
+import registerForPushNotificationsAsync from '../../services/notification';
+import { Notifications } from 'expo';
 interface Props {
     navigation: any
 }
@@ -10,8 +12,17 @@ interface Props {
 
 export default class Home extends React.Component<Props> {
 
+    _notificationSubscription: any;
+
+    _handleNotification = notification => {
+        console.log('notification', notification);
+        // do whatever you want to do with the notification
+        // this.setState({ notification: notification });
+    };
 
     async componentDidMount() {
+        registerForPushNotificationsAsync();
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
         try {
             const value = await AsyncStorage.getItem('customer');
             console.log('gregreg', value);

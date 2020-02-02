@@ -1,2 +1,2 @@
-export const ADD_FRIEND = 'ADD_FRIEND'
-export const ADD_ITEM = 'ADD_ITEM'
+export const ORDER_DETAILS = 'ORDER_DETAILS'
+export const SHOW_ORDER = 'SHOW_ORDER'

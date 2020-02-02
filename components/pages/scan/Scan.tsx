@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Button, Dimensions, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Button, Dimensions, AsyncStorage, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
 import PopupLoader from '../../shared/popup';
 import * as Permissions from 'expo-permissions';
@@ -7,7 +7,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { ScanService } from '../../services/scan';
 import Constants from 'expo-constants';
 import { bindActionCreators } from 'redux';
-import { addFriend } from '../../data/FriendAction';
+import { orderDetails } from '../../data/FriendAction';
 import { connect } from 'react-redux';
 
 
@@ -115,9 +115,25 @@ class Scan extends React.Component<any, any> {
             }
             if (result.status == 401) {
                 alert('You have already scanned');
+            } else if (result.status == 201) {
+                // alert('It seems you have already scanned');
+                this.props.orderDetails(temp);
+
+                Alert.alert(
+                    'Mynu',
+                    'It seems you have already scanned',
+                    [
+                        {
+                            text: 'OK', onPress: () => this.props.navigation.navigate('OrderDetails')
+                        },
+                    ],
+                    { cancelable: false }
+                )
             } else {
-                this.props.addFriend(temp);
-                this.props.navigation.navigate('Menu');
+                this.props.orderDetails(temp);
+                this.props.navigation.navigate('Logo', {
+                    logo: result.logo
+                });
             }
         })
     }
@@ -128,7 +144,7 @@ class Scan extends React.Component<any, any> {
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        addFriend,
+        orderDetails,
     }, dispatch)
 );
 

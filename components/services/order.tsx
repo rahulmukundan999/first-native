@@ -25,4 +25,24 @@ export class OrderService {
         });
 
     }
+
+    checkOrder(data, cb) {
+        this.discovery.request("customeredge", {
+            rpc: "customeredge.checkOrder",
+            data: data
+        }, function (res) {
+            cb(res);
+        });
+
+    }
+
+    checkOut(data, cb) {
+        this.discovery.request("customeredge", {
+            rpc: "customeredge.checkOut",
+            data: data
+        }, function (res) {
+            cb(res);
+        });
+
+    }
 }

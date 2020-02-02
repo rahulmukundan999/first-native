@@ -1,15 +1,14 @@
-import { ADD_FRIEND, ADD_ITEM } from './Types';
+import { ORDER_DETAILS, SHOW_ORDER } from './Types';
 
-export const addFriend = friendIndex => (
+export const orderDetails = data => (
     {
-        type: ADD_FRIEND,
-        payload: friendIndex,
+        type: ORDER_DETAILS,
+        payload: data,
     }
 );
 
-export const addItem = item => (
+export const showOrder = () => (
     {
-        type: ADD_ITEM,
-        payload: item
+        type: SHOW_ORDER
     }
 )

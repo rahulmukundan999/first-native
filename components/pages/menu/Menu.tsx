@@ -7,11 +7,12 @@ import { MenuService } from '../../services/menu';
 import Loader from '../../shared/loader'
 import PopupLoader from '../../shared/popup';
 import MenuIcons from './MenuIcons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import SelectableItem from './Item';
 import { bindActionCreators } from 'redux';
-import { addItem } from '../../data/FriendAction';
+import { orderDetails } from '../../data/FriendAction';
+import { showOrder } from '../../data/FriendAction';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -36,7 +37,8 @@ class Menu extends React.Component<any, any> {
             items: {},
             data: {},
             details: {},
-            pLoading: false
+            pLoading: false,
+            orderDetails: {}
         }
 
         this.handleOnPressItem = this.handleOnPressItem.bind(this);
@@ -90,7 +92,7 @@ class Menu extends React.Component<any, any> {
 
 
     componentDidMount() {
-        let temp = this.props.friends.current[this.props.friends.current.length - 1];
+        let temp = this.props.order;
         // console.log('temptemp', temp)
         // let temp = JSON.parse(this.props.navigation.getParam('details'));
         console.log('gregergregre', temp);
@@ -103,7 +105,10 @@ class Menu extends React.Component<any, any> {
         this.menuService.fetchMenu(temp1, (result: any) => {
             // console.log('gewgew', result)
             if (result.status == 200) {
-                this.setState({ menu: result.categories, loading: false, details: temp });
+                this.setState({ menu: result.categories, details: temp, orderDetails: temp1 });
+                setTimeout(() => {
+                    this.setState({ loading: false })
+                });
             }
         })
     }
@@ -239,10 +244,10 @@ class Menu extends React.Component<any, any> {
                             keyExtractor={item => item._id}
                             renderItem={this.renderItem}
                             removeClippedSubviews={true} // Unmount components when outside of window 
-                            // initialNumToRender={4} // Reduce initial render amount
-                            maxToRenderPerBatch={10} // Reduce number in each render batch
-                            // windowSize={7} // Reduce the window size
-                        // updateCellsBatchingPeriod={25}
+                            initialNumToRender={4} // Reduce initial render amount
+                            maxToRenderPerBatch={4} // Reduce number in each render batch
+                            windowSize={10} // Reduce the window size
+                            updateCellsBatchingPeriod={7}
                         />
                         {Object.keys(this.state.items).length > 0 ? (
                             <View style={styles.footer}>
@@ -251,12 +256,13 @@ class Menu extends React.Component<any, any> {
                                 </View>
                                 <View style={{ width: '60%', height: 70, backgroundColor: 'orange' }}>
                                     <TouchableOpacity onPress={() => {
-                                        console.log('gewrger', this.state.items);
-                                        this.props.addItem(this.state.items);
+                                        // this.props.addItem(this.state.items);
+                                        this.props.orderDetails(this.state.details);
                                         this.props.navigation.push('ItemDetails', {
                                             details: this.state.items,
                                             updateItem: this.updateItem,
-                                            handleOnPressItem: this.handleOnPressItem
+                                            handleOnPressItem: this.handleOnPressItem,
+                                            orderDetails: this.state.orderDetails
                                         })
                                         return
                                     }}
@@ -316,13 +322,14 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state) => {
-    const { friends } = state
-    return { friends }
+    const { order } = state
+    return { order }
 };
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        addItem,
+        orderDetails,
+        showOrder
     }, dispatch)
 );
 

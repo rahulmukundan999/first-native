@@ -13,8 +13,8 @@ export default function PopupLoader(props) {
         <Modal
             animationType="fade"
             transparent={true}
-            visible={true}
-            presentationStyle="overFullScreen"
+            // visible={true}
+            // presentationStyle="overFullScreen"
             onShow={async () => {
                 if (sound) {
 
@@ -32,10 +32,12 @@ export default function PopupLoader(props) {
                 }
 
             }}>
-            <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', marginBottom: 100 }}>
-                {/* <View> */}
-                <Image style={{ width: 50, height: 50 }} source={require('../../assets/loader.gif')} />
-                {/* </View> */}
+            <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '100%', width: '100%' }}>
+                <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', marginBottom: 100 }}>
+                    {/* <View> */}
+                    <Image style={{ width: 50, height: 50 }} source={require('../../assets/loader.gif')} />
+                    {/* </View> */}
+                </View>
             </View>
         </Modal>
     )

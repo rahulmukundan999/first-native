@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import MaterialIcons
     from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { bindActionCreators } from 'redux';
+import { orderDetails } from '../../data/FriendAction';
+import { PlaceOrder } from '../../services/placeOrder';
+import { showOrder } from '../../data/FriendAction';
+import PopupLoader from '../../shared/popup';
 
 interface Props {
     navigation: any
@@ -13,17 +18,58 @@ class ItemDetails extends React.Component<any, any> {
 
 
     backHandler: any;
+    placeOrderService: PlaceOrder = new PlaceOrder();
 
     constructor(props) {
         super(props);
         this.state = {
-            items: []
+            items: [],
+            loading: false
         }
         this.removeItem = this.removeItem.bind(this)
         this.addItem = this.addItem.bind(this);
         this.getTotal = this.getTotal.bind(this);
         this.handleBackPress = this.handleBackPress.bind(this);
+        this.placeOrder = this.placeOrder.bind(this);
 
+    }
+
+    placeOrder() {
+        this.setState({ loading: true })
+        let temp = this.props.navigation.getParam('orderDetails');
+        // console.log('temptemp', temp)
+        // let temp = JSON.parse(this.props.navigation.getParam('details'));
+        console.log('gregergregre', temp);
+        let items = [];
+        for (let index in this.state.items) {
+            for (let i = 0; i < this.state.items[index].length; i++) {
+                items.push({
+                    id: this.state.items[index][i].id,
+                    quantity: this.state.items[index][i].quantity,
+                    addons: []
+                })
+            }
+        }
+        let temp1 = {
+            orderId: temp.orderId,
+            uuid: temp.uuid,
+            orderType: temp.orderType,
+            restaurantId: temp.restaurantId,
+            items: items
+        };
+        this.placeOrderService.createOrder(temp1, (result) => {
+            this.setState({ loading: false })
+            console.log('place order', result);
+            if (result.status == 200) {
+                this.props.orderDetails({
+                    ...this.props.order,
+                    totalAmount: result.totalAmount ? result.totalAmount.toFixed(2) : 0
+                });
+                this.props.navigation.navigate('OrderDetails')
+            } else {
+                alert('Sorry some technical problem')
+            }
+        })
     }
 
 
@@ -68,6 +114,12 @@ class ItemDetails extends React.Component<any, any> {
         let temp = this.state.items;
         if (item.quantity == 0) {
             temp[course].splice(index, 1);
+            if (temp[course].length == 0) {
+                delete temp[course];
+            }
+            if (Object.keys(temp).length == 0) {
+                this.props.navigation.goBack();
+            }
         } else {
             temp[course][index] = item;
         }
@@ -139,6 +191,7 @@ class ItemDetails extends React.Component<any, any> {
     render() {
         return (
             <View style={{ flex: 1 }}>
+                {this.state.loading ? (<PopupLoader sound="true"></PopupLoader>) : (<React.Fragment></React.Fragment>)}
                 <ScrollView style={{ marginBottom: 70 }}>
                     {Object.keys(this.state.items).map(course => (
                         <React.Fragment key={course}>
@@ -156,7 +209,7 @@ class ItemDetails extends React.Component<any, any> {
                                 }}
                                     key={item.id}>
                                     <MaterialIcons name="remove-circle" size={30} style={{ color: 'lightgrey' }} onPress={() => this.removeItem(course, item, index)} />
-                                    <Text style={{ marginLeft: 11 ,width : 22,alignContent:'center',justifyContent:'center'}}>{item.quantity}</Text>
+                                    <Text style={{ marginLeft: 11, width: 22, alignContent: 'center', justifyContent: 'center' }}>{item.quantity}</Text>
                                     <MaterialIcons name="add-circle" size={30} style={{ marginLeft: 4, color: 'lightgrey' }} onPress={() => this.addItem(course, item, index)} />
                                     <Text style={{ marginLeft: 10 }}>{item.name}</Text>
                                     <Text style={{ position: 'absolute', right: 5, color: '#303030' }}>{item.price}</Text>
@@ -169,7 +222,9 @@ class ItemDetails extends React.Component<any, any> {
 
 
                 <View style={styles.footer}>
-                    <Text style={{ fontSize: 20, color: 'white', marginTop: 20 }}>ORDER NOW {this.getTotal()}</Text>
+                    <TouchableOpacity style={{ width: '100%', height: '100%', alignItems: 'center' }} onPress={this.placeOrder}>
+                        <Text style={{ fontSize: 20, color: 'white', marginTop: 20, justifyContent: 'center' }}>ORDER NOW {this.getTotal()}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -220,9 +275,27 @@ const styles = StyleSheet.create({
 
 
 
+// const mapStateToProps = (state) => {
+//     const { items } = state
+//     return { items }
+// };
+
+// export default connect(mapStateToProps)(ItemDetails);
+
+
+
+
+
 const mapStateToProps = (state) => {
-    const { items } = state
-    return { items }
+    const { order } = state
+    return { order }
 };
 
-export default connect(mapStateToProps)(ItemDetails);
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        showOrder,
+        orderDetails
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemDetails);

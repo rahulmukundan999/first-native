@@ -38,7 +38,7 @@ export class websocket {
     }
 
     async initDetails() {
-        console.log('init');
+        //console.log('init');
         try {
             let details: any = await AsyncStorage.getItem('customer');
             if (details) {
@@ -117,18 +117,18 @@ export class websocket {
         const socket = io(IP, connectionConfig);
         this.connections[comp] = socket;
         this.connections[comp].on('res', (response) => {
-            console.log('fewfwe', response);
+            //console.log('fewfwe', response);
             // response.response = this.decryptData(response.response);
             if (this.callbackMapper[response.reqid]) {
                 this.callbackMapper[response.reqid](response.response);
                 delete this.callbackMapper[response.reqid];
             } else {
-                console.log("not found")
+                //console.log("not found")
             }
         });
 
         this.connections[comp].on('error', function (error) {
-            console.log('scoket error', error);
+            //console.log('scoket error', error);
         });
     }
 
@@ -147,14 +147,14 @@ export class websocket {
             createConnection.bind(this)
         ], (error, response) => {
             // alert(JSON.stringify(error));
-            console.log(comp);
-            console.log(data);
-            console.log('send request');
+            //console.log(comp);
+            //console.log(data);
+            //console.log('send request');
             this.sendRequest(data, comp);
         });
 
         function checkConnection(callback) {
-            console.log('wegweg')
+            //console.log('wegweg')
             if (this.connections[comp] && this.connections[comp].isConnected) {
                 callback({
                     status: 200
@@ -165,10 +165,10 @@ export class websocket {
         }
 
         function getComponentInfo(callback) {
-            console.log('5235235wegweg')
+            //console.log('5235235wegweg')
 
             this.getSocketInfo(comp, function (response) {
-                console.log(response);
+                //console.log(response);
                 if (response.status == 200) {
                     sharedData.compInfo = response;
                     // alert(JSON.stringify(sharedData));
@@ -183,9 +183,9 @@ export class websocket {
         }
 
         function createConnection(callback) {
-            // console.log('process', process.env.NODE_ENV);
-            // console.log('temp', "http://" + temp.config.serverUrl + ":" + temp.config.port);
-            // console.log('tempV2', "http://" + sharedData.compInfo.publicIp + ":" + sharedData.compInfo.nport);
+            // //console.log('process', process.env.NODE_ENV);
+            // //console.log('temp', "http://" + temp.config.serverUrl + ":" + temp.config.port);
+            // //console.log('tempV2', "http://" + sharedData.compInfo.publicIp + ":" + sharedData.compInfo.nport);
             this.connect(comp, "http://" + sharedData.compInfo.publicIp + ":" + sharedData.compInfo.nport);
 
             callback();
@@ -203,7 +203,7 @@ export class websocket {
                 ...this.details
             }
         };
-        console.log('tewtwet', temp);
+        //console.log('tewtwet', temp);
         this.connections[comp].emit("req", temp);
     }
 

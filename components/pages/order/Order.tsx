@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { ScrollView } from 'react-native-gesture-handler';
 import Loader from '../../shared/loader'
 import { bindActionCreators } from 'redux';
-import { addFriend } from '../../data/FriendAction';
+import { orderDetails, showOrder } from '../../data/FriendAction';
 import { connect } from 'react-redux';
 
 interface Props {
@@ -36,55 +36,60 @@ class Order extends React.Component<any, any> {
                 "paid": {
                     color: 'orange',
                     name: 'Order sent'
+                },
+                'accepted': {
+                    color: 'orange',
+                    name: 'Preparing Meal'
+                },
+                'unpaid': {
+                    color: 'orange',
+                    name: 'Waiter called for payment'
                 }
             }
         }
+        this.fetchOrders = this.fetchOrders.bind(this);
+        this.fetchOrderHistory = this.fetchOrderHistory.bind(this);
+    }
 
+    async fetchOrders() {
+        return new Promise((resolve) => {
+            this.orderService.fetchOrders({}, (result) => {
+                console.log('result orders', result);
+
+                if (result.status == 200) {
+
+                    for (let i = 0; i < result.orders.length; i++) {
+                        result.orders[i].date = moment.unix(result.orders[i].date).format('MM-DD-YYYY');
+                    }
+                    this.setState({ openOrders: result.orders });
+                }
+                resolve();
+            })
+        })
+
+    }
+    async fetchOrderHistory() {
+        return new Promise((resolve) => {
+            this.orderService.fetchOrderHistory({}, (result) => {
+                console.log('result orders history', result);
+                if (result.status == 200) {
+                    for (let i = 0; i < result.orders.length; i++) {
+                        result.orders[i].date = moment.unix(result.orders[i].date).format('MM-DD-YYYY');
+                    }
+                    this.setState({
+                        orderHistory: result.orders
+                    });
+                }
+                resolve();
+            })
+        })
     }
 
     async componentDidMount() {
-        // try {
-        // let details = JSON.parse(await AsyncStorage.getItem('customer'));
-        let data = {
-            // versionNumber: Constants.systemVersion,
-            // appBuildNumber: Constants.expoVersion,
-            // deviceType: 'android',
-            // language: "en",
-            // manufacturer: Constants.deviceName,
-            // deviceModel: Constants.deviceName,
-            // osVersion: '28',
-            // deviceId: Constants.deviceId,
-            // "isDevComponent": true,
-            // "isoCountryCode": "IN",
-            // "customerId": details.customerId,
-        }
-        this.orderService.fetchOrders(data, (result) => {
-            console.log('result orders', result);
 
-            if (result.status == 200) {
-
-                for (let i = 0; i < result.orders.length; i++) {
-                    result.orders[i].date = moment.unix(result.orders[i].date).format('MM-DD-YYYY');
-                }
-                this.setState({ openOrders: result.orders });
-            }
-        })
-
-        this.orderService.fetchOrderHistory(data, (result) => {
-            console.log('result orders history', result);
-            if (result.status == 200) {
-                for (let i = 0; i < result.orders.length; i++) {
-                    result.orders[i].date = moment.unix(result.orders[i].date).format('MM-DD-YYYY');
-                }
-                this.setState({
-                    orderHistory: result.orders,
-                    loading: false
-                });
-            }
-        })
-        // } catch (error) {
-        //     alert(error);
-        // }
+        await this.fetchOrders();
+        await this.fetchOrderHistory();
+        this.setState({ loading: false })
     }
 
     async checkOrder(order) {
@@ -92,9 +97,11 @@ class Order extends React.Component<any, any> {
             name: 'gghh',
             ...order
         }
-        this.props.addFriend(temp);
+        this.props.orderDetails(temp);
         if (order.orderStatus == "scanned") {
             this.props.navigation.navigate('Menu');
+        } else if (order.orderStatus == 'accepted') {
+            this.props.navigation.navigate('OrderDetails');
         }
     }
 
@@ -133,7 +140,7 @@ class Order extends React.Component<any, any> {
                                                     <View style={styles.orderDetails}>
                                                         <Text style={{ fontSize: 15, color: 'black', fontWeight: '400' }}>{order.city}</Text>
                                                         <Text style={{ fontSize: 12, color: 'grey', fontWeight: '200' }}>{order.streetName} {order.city} {order.country}</Text>
-                                                        <Text><Text style={{ fontSize: 14, fontWeight: '300' }}>{order.billedAmount}$  </Text>
+                                                        <Text><Text style={{ fontSize: 14, fontWeight: '300' }}>{order.billedAmount ? order.billedAmount.toFixed(2) : 0}$  </Text>
                                                             <Text style={{ fontSize: 12, fontWeight: '200', color: 'grey' }}> , {order.date} , ID:{order.orderId}</Text></Text>
                                                         <Text style={{ color: this.state.orderType[order.orderStatus].color, fontSize: 12, marginTop: 10 }}>{this.state.orderType[order.orderStatus].name}</Text>
                                                     </View>
@@ -232,8 +239,10 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        addFriend,
+        orderDetails,
+        showOrder
     }, dispatch)
 );
+
 
 export default connect(null, mapDispatchToProps)(Order);

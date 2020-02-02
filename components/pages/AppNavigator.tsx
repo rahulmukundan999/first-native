@@ -9,10 +9,14 @@ import Home from './home/Home';
 import Menu from './menu/Menu';
 import Login from './login/Login';
 import Scan from './scan/Scan';
+import Logo from './scan/Logo'
+import OrderDetails from './orderDetails/OrderDetails';
+import Account from './account/Account'
 import Order from './order/Order';
 import ItemDetails from './itemDetails/ItemDetails'
 import { Dimensions, Button } from 'react-native';
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Checkout from './checkout/Checkout'
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -42,12 +46,18 @@ const MenuScreen = createStackNavigator({
             header: null
         }
     },
+    Logo: {
+        screen: Logo,
+        navigationOptions: {
+            header: null
+        }
+    },
     ItemDetails: {
         screen: ItemDetails,
-        navigationOptions:{
-            headerTitle : 'Your Orders',
-            headerTitleStyle : {
-                width : WIDTH - 75
+        navigationOptions: {
+            headerTitle: 'Your Orders',
+            headerTitleStyle: {
+                width: WIDTH - 75
             }
         }
         // navigationOptions: ({ navigation, }) => {
@@ -87,6 +97,46 @@ const ScanScreen = createStackNavigator({
 });
 
 
+const OrderDetailsScreen = createStackNavigator({
+    scan: {
+        screen: OrderDetails,
+        navigationOptions: {
+            headerTitle: 'Your Order',
+            headerTitleStyle: {
+                width: WIDTH - 75
+            },
+            headerTintColor: 'black'
+
+        }
+    },
+    Checkout: {
+        screen: Checkout,
+        navigationOptions: {
+            headerTitle: 'How do you wish to pay',
+            headerTitleStyle: {
+                width: WIDTH - 75
+            },
+            headerTintColor: 'black'
+        }
+    }
+}
+    // {
+    //     defaultNavigationOptions: {
+    //         headerStyle: {
+    //             backgroundColor: '#f5f5f5',
+    //         },
+    //         headerTintColor: 'black',
+    //         title: 'Your Order',
+    //         headerTitleStyle: {
+    //             width: WIDTH - 75,
+    //         }
+    //     }
+    // }
+);
+
+
+
+
 
 const Bottom = createBottomTabNavigator({
     //Defination of Navigaton bottom options
@@ -97,11 +147,11 @@ const Bottom = createBottomTabNavigator({
         screen: OrderStack,
     },
     Restaurant: {
-        screen: LoginStack
+        screen: Account
 
     },
     Account: {
-        screen: LoginStack
+        screen: Account
 
     }
 }, {
@@ -123,7 +173,7 @@ const Bottom = createBottomTabNavigator({
             let iconName;
             if (routeName === 'Scan') {
                 iconName = `ios-qr-scanner`;
-                return <IconComponent name={
+                return <TouchableOpacity activeOpacity={5}><IconComponent name={
                     iconName
                 }
                     size={
@@ -132,7 +182,7 @@ const Bottom = createBottomTabNavigator({
                     color={
                         tintColor
                     }
-                />;
+                /></TouchableOpacity>;
                 // Sometimes we want to add badges to some icons.
                 // You can check the implementation below.
             } else if (routeName === 'Orders') {
@@ -200,6 +250,9 @@ const AppNavigator = createSwitchNavigator({
         screen: MenuScreen
 
     },
+    OrderDetails: {
+        screen: OrderDetailsScreen
+    }
 }, {
     initialRouteName: 'Home',
 });
