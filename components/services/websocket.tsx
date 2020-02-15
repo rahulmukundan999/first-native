@@ -2,6 +2,9 @@ import io from "socket.io-client";
 import Constants from 'expo-constants';
 import * as async from 'async';
 import { AsyncStorage } from 'react-native';
+import registerForPushNotificationsAsync from './notification';
+const ds = "http://ds1.mynu.app:3010";
+// const ds = "http://yds.vimolive.com:3010"
 // import crypto from 'crypto';
 // let algorithm = 'aes-128-ecb';
 // let password = '1234';
@@ -20,6 +23,7 @@ export class websocket {
     private callbackMapper: any;
     public componentStatus: any = 'dev';
     public details: any = {};
+    private token: any;
 
     // public componentStatus: any = 'active';
 
@@ -38,6 +42,9 @@ export class websocket {
     }
 
     async initDetails() {
+        if (!this.token) {
+            this.token = await registerForPushNotificationsAsync()
+        }
         //console.log('init');
         try {
             let details: any = await AsyncStorage.getItem('customer');
@@ -53,7 +60,8 @@ export class websocket {
                     osVersion: '28',
                     deviceId: Constants.deviceId,
                     "isDevComponent": true,
-                    "isoCountryCode": "IN",
+                    "isoCountryCode": details.isoCountryCode,
+                    deviceToken: this.token,
                     "customerId": details.customerId
                 }
             } else {
@@ -67,9 +75,10 @@ export class websocket {
                     osVersion: '28',
                     deviceId: Constants.deviceId,
                     "isDevComponent": true,
-                    "isoCountryCode": "IN",
+                    deviceToken: this.token,
                 }
             }
+            console.log('detail', this.details);
         } catch (error) {
             alert(error)
         }
@@ -95,7 +104,7 @@ export class websocket {
                 "rpc": "servicedirectory.getComponent"
             })
         } else {
-            this.connect('ds', 'http://yds.vimolive.com:3010');
+            this.connect('ds', ds);
             this.callbackMapper[reqid] = callback;
             // let data = this.encryptData({
             //     componentName: component,

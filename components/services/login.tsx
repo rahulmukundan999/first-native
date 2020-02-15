@@ -23,6 +23,16 @@ export class LoginService {
         });
     }
 
+    updateDeviceToken(data, cb) {
+        this.discovery.request("customeredge", {
+            rpc: "registration.updateDeviceToken",
+            data: data
+        }, function (res) {
+            console.log('fewfwe', res);
+            cb(res);
+        });
+    }
+
     // private websocket: websocket = new websocket();
     // constructor() {
     // }

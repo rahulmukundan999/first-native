@@ -9,7 +9,9 @@ export default class Account extends Component<any, any> {
     logOut = async () => {
         alert('Logged out')
         await AsyncStorage.removeItem('customer');
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Login', {
+            image: false
+        });
     }
 
     render() {

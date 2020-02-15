@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import registerForPushNotificationsAsync from '../../services/notification';
 import { Notifications } from 'expo';
+import Webview from '../../shared/webview'
 interface Props {
     navigation: any
 }
@@ -21,19 +22,19 @@ export default class Home extends React.Component<Props> {
     };
 
     async componentDidMount() {
-        registerForPushNotificationsAsync();
-        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+        // let token = registerForPushNotificationsAsync();
+        // this._notificationSubscription = Notifications.addListener(this._handleNotification);
         try {
             const value = await AsyncStorage.getItem('customer');
             console.log('gregreg', value);
             if (value !== null) {
-                setTimeout(() => {
-                    this.props.navigation.navigate('Dashboard')
-                }, 1000); console.log(value);
+                // setTimeout(() => {
+                this.props.navigation.navigate('Dashboard')
+                // }, 1000); console.log(value);
             } else {
-                setTimeout(() => {
-                    this.props.navigation.navigate('Login')
-                }, 1000);
+                // setTimeout(() => {
+                this.props.navigation.navigate('Login')
+                // }, 1000);
             }
         } catch (error) {
             alert('home' + error);
@@ -44,10 +45,10 @@ export default class Home extends React.Component<Props> {
 
         return (
             <View style={styles.container}>
-                <Image
+                {/* <Image
                     source={require('./mynu.png')}
                     style={{ width: 500, height: 400 }}
-                />
+                /> */}
             </View>
         );
     }

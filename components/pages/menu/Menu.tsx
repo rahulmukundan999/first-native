@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, Text, View, FlatList, Alert, Image, SectionList, Button } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, FlatList, Alert, Image, SectionList, Button, Animated } from 'react-native';
 import { Header } from 'react-native-elements';
 import MaterialIcons
     from 'react-native-vector-icons/MaterialIcons';
@@ -13,6 +13,7 @@ import SelectableItem from './Item';
 import { bindActionCreators } from 'redux';
 import { orderDetails } from '../../data/FriendAction';
 import { showOrder } from '../../data/FriendAction';
+import Constants from 'expo-constants';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -26,6 +27,11 @@ interface Props {
 
 class Menu extends React.Component<any, any> {
 
+
+
+    headerHeight: any = 200;
+
+
     menuService: MenuService = new MenuService();
     constructor(props) {
         super(props);
@@ -38,7 +44,9 @@ class Menu extends React.Component<any, any> {
             data: {},
             details: {},
             pLoading: false,
-            orderDetails: {}
+            orderDetails: {},
+            scrollY: new Animated.Value(0),
+
         }
 
         this.handleOnPressItem = this.handleOnPressItem.bind(this);
@@ -161,7 +169,20 @@ class Menu extends React.Component<any, any> {
     renderHeader() {
         const { data } = this.state;
         return (
-            <View>
+            <Animated.View
+                style={[
+                    styles.headerContainer,
+                    {
+                        width: Dimensions.get('window').width,
+                        height: this.state.scrollY.interpolate({
+                            inputRange: [0, this.headerHeight],
+                            outputRange: [this.headerHeight, 1],
+                            extrapolate: 'clamp',
+                        }),
+                    },
+                ]}
+            >
+                {/* <View> */}
                 <Text style={{ fontSize: 12, marginLeft: 10, marginTop: 5, color: 'rgb(114, 108, 108);' }}>{this.state.details.streetName}, {this.state.details.city}, {this.state.details.country}, {this.state.details.zipCode}</Text>
                 <View style={styles.main}>
                     <Image
@@ -177,7 +198,9 @@ class Menu extends React.Component<any, any> {
                 <View>
                     <MenuIcons details={this.state.details} />
                 </View>
-            </View>
+                {/* </View> */}
+            </Animated.View>
+
         )
     }
 
@@ -236,9 +259,42 @@ class Menu extends React.Component<any, any> {
                     {this.state.pLoading ? (
                         <PopupLoader />
                     ) : (<View></View>)}
+                    {this.renderHeader()}
                     <View style={{ flex: 1 }}>
+                        {/* <Animated.ScrollView
+                            bounces={false}
+                            scrollEventThrottle={1}
+                            showsVerticalScrollIndicator={false}
+                            showsHorizontalScrollIndicator={false}
+                            onScroll={Animated.event([
+                                { nativeEvent: { contentOffset: { y: this.state.scrollY } } },
+                            ])}
+                        >
+                            <Animated.View
+
+                                bounces={false}
+                                scrollEventThrottle={1}
+                                showsVerticalScrollIndicator={false}
+                                showsHorizontalScrollIndicator={false}
+                                onScroll={Animated.event([
+                                    { nativeEvent: { contentOffset: { y: this.state.scrollY } } },
+                                ])}
+
+                                style={[
+                                    styles.innerScrollContainer,
+                                    {
+                                        height: 2000,
+                                        width: Dimensions.get('window').width,
+                                        marginTop: this.headerHeight,
+                                    },
+                                ]}
+                            > */}
                         <FlatList
-                            ListHeaderComponent={this.renderHeader}
+                            scrollEventThrottle={0.5}
+                            bounces={false}
+
+                            // style={styles.innerScrollContainer}
+                            // ListHeaderComponent={this.renderHeader}
                             data={this.state.menu}
                             extraData={this.state.selected}
                             keyExtractor={item => item._id}
@@ -248,7 +304,13 @@ class Menu extends React.Component<any, any> {
                             maxToRenderPerBatch={4} // Reduce number in each render batch
                             windowSize={10} // Reduce the window size
                             updateCellsBatchingPeriod={7}
+                            // scrollEventThrottle={16}
+                            onScroll={Animated.event([
+                                { nativeEvent: { contentOffset: { y: this.state.scrollY } } },
+                            ])}
                         />
+                        {/* </Animated.View>
+                        </Animated.ScrollView> */}
                         {Object.keys(this.state.items).length > 0 ? (
                             <View style={styles.footer}>
                                 <View style={{ width: '40%', height: 70, backgroundColor: 'white' }}>
@@ -315,7 +377,21 @@ const styles = StyleSheet.create({
     footer: {
         height: 70,
         flexDirection: 'row'
-    }
+    },
+    headerContainer: {
+        // position: 'absolute',
+        top: 80,
+        left: 0,
+        overflow: 'hidden',
+        // backgroundColor: 'green',
+    },
+    innerScrollContainer: {
+
+        position: 'relative',
+        // backgroundColor: 'white',
+    },
+    innerContainerText: { color: 'black' },
+    testingText: { color: 'black' },
 });
 
 
@@ -334,3 +410,9 @@ const mapDispatchToProps = dispatch => (
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import * as temp from 'react-navigation-tabs';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -17,7 +18,7 @@ import ItemDetails from './itemDetails/ItemDetails'
 import { Dimensions, Button } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Checkout from './checkout/Checkout'
-
+import OrderDone from './orderDone/OrderDone';
 const WIDTH = Dimensions.get('window').width;
 
 const OrderStack = createStackNavigator({
@@ -88,8 +89,8 @@ const ScanScreen = createStackNavigator({
         headerStyle: {
             backgroundColor: '#f5f5f5',
         },
-        headerTintColor: 'black',
-        title: 'Please scan the qr code',
+        headerTintColor: 'grey',
+        title: 'Table Check in',
         headerTitleStyle: {
             width: WIDTH - 75,
         }
@@ -135,7 +136,22 @@ const OrderDetailsScreen = createStackNavigator({
 );
 
 
-
+const OrderDoneScreen = createStackNavigator({
+    OrderDone: {
+        screen: OrderDone
+    }
+}, {
+    defaultNavigationOptions: {
+        headerStyle: {
+            backgroundColor: '#f5f5f5',
+        },
+        headerTintColor: 'grey',
+        title: 'Your Order',
+        headerTitleStyle: {
+            width: WIDTH - 75,
+        }
+    }
+});
 
 
 const Bottom = createBottomTabNavigator({
@@ -230,8 +246,13 @@ const Bottom = createBottomTabNavigator({
         activeTintColor: 'orange',
         inactiveTintColor: 'gray',
         style: {
-            height: 50
+            height: 55,
+            shadowColor: "green",
+            shadowRadius: 30,
+            elevation: 5,
+            shadowOpacity: 1
         }
+
     },
 });
 
@@ -252,6 +273,9 @@ const AppNavigator = createSwitchNavigator({
     },
     OrderDetails: {
         screen: OrderDetailsScreen
+    },
+    OrderDone: {
+        screen: OrderDoneScreen
     }
 }, {
     initialRouteName: 'Home',

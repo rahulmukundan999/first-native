@@ -4,6 +4,7 @@ import AppNavigator from './components/pages/AppNavigator';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import friendReducer from './components/data/FriendReducer';
+// console.log = function () { };
 const store = createStore(friendReducer);
 declare var global: any;
 const _setTimeout = global.setTimeout;

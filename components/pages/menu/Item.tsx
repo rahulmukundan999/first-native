@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Dimensions, Text, View, Image } from 'react-native';
 import MaterialIcons
     from 'react-native-vector-icons/MaterialIcons';
-
+import DialogBox from './DialogBox';
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 
@@ -14,6 +14,9 @@ interface Props {
 export default class SelectableItem extends React.Component<any, any> {
     constructor(props) {
         super(props);
+        this.state = {
+            activeOn: false
+        }
 
         this.handleOnPress = this.handleOnPress.bind(this);
         this.addItem = this.addItem.bind(this);
@@ -24,6 +27,9 @@ export default class SelectableItem extends React.Component<any, any> {
     addItem() {
         const { onPressItem, id, items, item } = this.props;
         if (!items[id]) {
+            if (item.activeOn) {
+                this.setState({ activeOn: true })
+            }
             items[id] = {
                 quantity: 0,
                 name: item.name,
@@ -99,6 +105,7 @@ export default class SelectableItem extends React.Component<any, any> {
 
         return (
             <View>
+                {this.state.activeOn ? (<DialogBox></DialogBox>) : null}
                 <View style={{ marginLeft: 8, marginTop: 2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '100' }}>{item.name}</Text>
                 </View>

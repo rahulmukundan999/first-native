@@ -44,6 +44,10 @@ class Order extends React.Component<any, any> {
                 'unpaid': {
                     color: 'orange',
                     name: 'Waiter called for payment'
+                },
+                "served": {
+                    color: 'yellowgreen',
+                    name: 'Paid'
                 }
             }
         }
@@ -109,7 +113,12 @@ class Order extends React.Component<any, any> {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={{ flex: 1 }}>
+                {(!this.state.loading && this.state.openOrders.length == 0 && this.state.orderHistory.length == 0) ? (
+                    <View style={styles.container}>
+                        <Text style={{ color: '#606060', fontSize: 20 }}>No orders</Text>
+                    </View>
+                ) : null}
                 {this.state.loading ? (
                     <View style={styles.load}>
                         <Loader />
@@ -158,7 +167,7 @@ class Order extends React.Component<any, any> {
                                         </TouchableOpacity>
                                     ))}
                                 </View>
-                            ) : (<View></View>)}
+                            ) : null}
                             {this.state.orderHistory.length > 0 ? (
                                 <View>
                                     <Header
@@ -172,8 +181,8 @@ class Order extends React.Component<any, any> {
                                         }}
                                     />
                                     {this.state.orderHistory.map(order => (
-                                        <View>
-                                            <View style={styles.order} key={order.orderId}>
+                                        <View key={order.orderId}>
+                                            <View style={styles.order}>
                                                 <View style={styles.logo}>
                                                     <Image
                                                         style={{ width: '95%', height: '100%', resizeMode: 'center', flex: 1 }}
@@ -199,7 +208,7 @@ class Order extends React.Component<any, any> {
                                         </View>
                                     ))}
                                 </View>
-                            ) : (<View></View>)}
+                            ) : null}
                         </ScrollView>
                     )}
             </View>
@@ -210,10 +219,11 @@ class Order extends React.Component<any, any> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        // backgroundColor: '#fff',
         // marginBottom: 75
-        // alignItems: 'center',
-        // justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '45%'
     },
     load: {
         marginTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight

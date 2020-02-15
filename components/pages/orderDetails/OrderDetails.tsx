@@ -78,6 +78,8 @@ class OrderDetails extends Component<any, any> {
                     }
                     console.log('tewytwe', temp);
                     this.setState({ details: temp, mainLoader: false });
+                } else {
+                    this.props.navigation.navigate('Order');
                 }
             } else {
                 alert(result.msg);

@@ -17,4 +17,5 @@ export default async function registerForPushNotificationsAsync() {
 
     // Get the token that identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
+    return token;
 }
